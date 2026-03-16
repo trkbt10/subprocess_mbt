@@ -22,10 +22,18 @@ test "temp_dir_for appends name" {
 }
 
 ///|
-test "get_env returns PATH" {
-  // PATH exists on all platforms
+#cfg(not(platform="windows"))
+test "get_env returns value for existing var (unix)" {
   let path = @env.get_env("PATH")
   assert_true(path is Some(_))
+}
+
+///|
+#cfg(platform="windows")
+test "get_env returns value for existing var (windows)" {
+  // WINDIR is always set on Windows (e.g. C:\Windows)
+  let windir = @env.get_env("WINDIR")
+  assert_true(windir is Some(_))
 }
 
 ///|
