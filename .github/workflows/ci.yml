@@ -4,27 +4,46 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - name: Set up MoonBit
+      - name: Set up MoonBit (Unix)
+        if: runner.os != 'Windows'
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Set up MoonBit (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://cli.moonbitlang.com/install/powershell.ps1 -OutFile install.ps1
+          & .\install.ps1
+          "$env:USERPROFILE\.moon\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+      - name: Show tool versions
+        run: moon version --all
 
       - name: Install dependencies
-        run: moon version --all && moon update
+        run: moon update
+
+      - name: Format check
+        run: moon fmt --check
 
       - name: Check
         run: moon check --target native
 
       - name: Test
         run: moon test --target native
-
-      - name: Format check
-        run: moon fmt --check
