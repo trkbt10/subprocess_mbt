@@ -8,5 +8,7 @@
   "description": "Node.js child_process-like subprocess management for MoonBit",
   "deps": {
     "moonbitlang/async": "0.16.7"
-  }
+  },
+  "preferred-target": "native",
+  "exclude": ["cmd"]
 }

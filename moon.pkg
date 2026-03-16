@@ -2,3 +2,13 @@ import {
   "moonbitlang/async" @async,
   "moonbitlang/async/process" @process,
 }
+
+options(
+  targets: {
+    "spawn.mbt": [ "native" ],
+    "subprocess.mbt": [ "native" ],
+    "subprocess_test.mbt": [ "native" ],
+    "subprocess_wbtest.mbt": [ "native" ],
+    "types.mbt": [ "native" ],
+  },
+)

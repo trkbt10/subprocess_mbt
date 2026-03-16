@@ -3,3 +3,10 @@ import {
   "moonbitlang/async/process" @process,
   "trkbt10/subprocess" @subprocess,
 }
+
+options(
+  targets: {
+    "manager.mbt": [ "native" ],
+    "managed_test.mbt": [ "native" ],
+  },
+)
