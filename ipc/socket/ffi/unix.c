@@ -1,5 +1,9 @@
 // POSIX AF_UNIX implementation (Linux, macOS, BSD)
 
+#ifdef __linux__
+#define _GNU_SOURCE
+#endif
+
 #ifndef _WIN32
 
 #include "ipc.h"
