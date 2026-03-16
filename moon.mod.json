@@ -1,0 +1,12 @@
+{
+  "name": "trkbt10/subprocess",
+  "version": "0.1.0",
+  "readme": "README.mbt.md",
+  "repository": "",
+  "license": "Apache-2.0",
+  "keywords": ["subprocess", "process", "exec", "spawn"],
+  "description": "Node.js child_process-like subprocess management for MoonBit",
+  "deps": {
+    "moonbitlang/async": "0.16.7"
+  }
+}

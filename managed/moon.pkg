@@ -1,0 +1,5 @@
+import {
+  "moonbitlang/async" @async,
+  "moonbitlang/async/process" @process,
+  "trkbt10/subprocess" @subprocess,
+}

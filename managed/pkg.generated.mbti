@@ -1,0 +1,34 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "trkbt10/subprocess/managed"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/process",
+  "trkbt10/subprocess",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+type ManagedChild
+
+pub struct ProcessManager {
+  // private fields
+}
+pub fn ProcessManager::active_count(Self) -> Int
+pub fn ProcessManager::cancel_all(Self) -> Unit
+pub async fn ProcessManager::exec(Self, String, cwd? : String, env? : Map[String, String], inherit_env? : Bool, check? : Bool) -> @subprocess.ExecResult raise @subprocess.SubprocessError
+pub async fn ProcessManager::exec_file(Self, String, args? : Array[String], cwd? : String, env? : Map[String, String], inherit_env? : Bool, check? : Bool) -> @subprocess.ExecResult raise @subprocess.SubprocessError
+pub fn ProcessManager::new() -> Self
+pub fn ProcessManager::reap(Self) -> Unit
+pub async fn ProcessManager::shutdown(Self) -> Unit
+pub async fn[X] ProcessManager::spawn(Self, @async.TaskGroup[X], String, args? : Array[String], cwd? : String, env? : Map[String, String], inherit_env? : Bool, pipe_stdin? : Bool, pipe_stdout? : Bool, pipe_stderr? : Bool, cancel_handler? : @process.CancellationHandler) -> @subprocess.ChildProcess raise @subprocess.SubprocessError
+pub async fn[X] ProcessManager::spawn_shell(Self, @async.TaskGroup[X], String, cwd? : String, env? : Map[String, String], inherit_env? : Bool, pipe_stdin? : Bool, pipe_stdout? : Bool, pipe_stderr? : Bool, cancel_handler? : @process.CancellationHandler) -> @subprocess.ChildProcess raise @subprocess.SubprocessError
+pub async fn ProcessManager::wait_all(Self) -> Unit
+
+// Type aliases
+
+// Traits
+

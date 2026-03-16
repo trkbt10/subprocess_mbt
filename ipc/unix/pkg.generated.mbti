@@ -1,0 +1,48 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "trkbt10/subprocess/ipc/unix"
+
+// Values
+pub fn recv_framed_message(Int) -> String? raise IpcError
+
+pub fn send_framed_message(Int, Bytes) -> Unit raise IpcError
+
+// Errors
+pub(all) suberror IpcError {
+  SocketError(String)
+  ConnectionFailed(String)
+  IoError(String)
+  Disconnected
+  MessageTooLarge(Int)
+}
+pub impl Show for IpcError
+
+// Types and methods
+pub struct UnixConnection {
+  // private fields
+}
+pub fn UnixConnection::close(Self) -> Unit
+pub fn UnixConnection::connect(String) -> Self raise IpcError
+pub fn UnixConnection::fd(Self) -> Int
+pub fn UnixConnection::from_fd(Int) -> Self
+pub fn UnixConnection::peer_pid(Self) -> Int?
+pub fn UnixConnection::poll(Self, timeout_ms? : Int) -> Bool raise IpcError
+pub fn UnixConnection::read_bytes(Self, max_len? : Int) -> Bytes raise IpcError
+pub fn UnixConnection::recv(Self) -> String? raise IpcError
+pub fn UnixConnection::send(Self, String) -> Unit raise IpcError
+pub fn UnixConnection::write_bytes(Self, Bytes) -> Unit raise IpcError
+
+pub struct UnixServer {
+  // private fields
+}
+pub fn UnixServer::accept(Self) -> UnixConnection raise IpcError
+pub fn UnixServer::close(Self) -> Unit
+pub fn UnixServer::fd(Self) -> Int
+pub fn UnixServer::new(String) -> Self raise IpcError
+pub fn UnixServer::path(Self) -> String
+pub fn UnixServer::poll_accept(Self, timeout_ms? : Int) -> UnixConnection? raise IpcError
+pub fn UnixServer::set_nonblocking(Self) -> Unit raise IpcError
+
+// Type aliases
+
+// Traits
+

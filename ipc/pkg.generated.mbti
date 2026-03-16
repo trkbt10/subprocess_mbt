@@ -1,0 +1,27 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "trkbt10/subprocess/ipc"
+
+import {
+  "trkbt10/subprocess",
+  "trkbt10/subprocess/ipc/unix",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) enum IpcChannel {
+  Socket(@unix.UnixConnection)
+  Pipe(@subprocess.ChildProcess)
+}
+pub fn IpcChannel::close(Self) -> Unit
+pub fn IpcChannel::from_child(@subprocess.ChildProcess) -> Self
+pub fn IpcChannel::from_socket(@unix.UnixConnection) -> Self
+pub async fn IpcChannel::recv(Self) -> String? raise @unix.IpcError
+pub async fn IpcChannel::send(Self, String) -> Unit raise @unix.IpcError
+
+// Type aliases
+
+// Traits
+

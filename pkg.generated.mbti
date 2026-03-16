@@ -1,0 +1,48 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "trkbt10/subprocess"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/process",
+}
+
+// Values
+pub async fn exec(String, cwd? : String, env? : Map[String, String], inherit_env? : Bool, check? : Bool) -> ExecResult raise SubprocessError
+
+pub async fn exec_file(String, args? : Array[String], cwd? : String, env? : Map[String, String], inherit_env? : Bool, check? : Bool) -> ExecResult raise SubprocessError
+
+pub async fn[X] spawn(@async.TaskGroup[X], String, args? : Array[String], cwd? : String, env? : Map[String, String], inherit_env? : Bool, pipe_stdin? : Bool, pipe_stdout? : Bool, pipe_stderr? : Bool, cancel_handler? : @process.CancellationHandler) -> ChildProcess raise SubprocessError
+
+pub async fn[X] spawn_shell(@async.TaskGroup[X], String, cwd? : String, env? : Map[String, String], inherit_env? : Bool, pipe_stdin? : Bool, pipe_stdout? : Bool, pipe_stderr? : Bool, cancel_handler? : @process.CancellationHandler) -> ChildProcess raise SubprocessError
+
+// Errors
+pub(all) suberror SubprocessError {
+  CommandFailed(ExecResult)
+  SpawnFailed(String)
+}
+pub impl Show for SubprocessError
+
+// Types and methods
+pub struct ChildProcess {
+  process : @process.Process
+  stdin : @process.WriteToProcess?
+  stdout : @process.ReadFromProcess?
+  stderr : @process.ReadFromProcess?
+}
+pub fn ChildProcess::cancel(Self) -> Unit
+pub fn ChildProcess::close_stdin(Self) -> Unit
+pub fn ChildProcess::pid(Self) -> Int
+pub fn ChildProcess::try_wait(Self) -> Int? raise
+pub async fn ChildProcess::wait(Self) -> Int
+
+pub(all) struct ExecResult {
+  exit_code : Int
+  stdout : String
+  stderr : String
+}
+pub impl Show for ExecResult
+
+// Type aliases
+
+// Traits
+

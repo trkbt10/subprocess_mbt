@@ -1,0 +1,9 @@
+import {
+  "moonbitlang/async" @async,
+  "trkbt10/subprocess" @subprocess,
+  "trkbt10/subprocess/managed" @managed,
+}
+
+options(
+  "is-main": true,
+)
