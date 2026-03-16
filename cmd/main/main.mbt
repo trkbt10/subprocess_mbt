@@ -1,19 +1,14 @@
 ///|
 async fn main {
-  // Example 1: exec - run a shell command
-  println("=== exec ===")
+  // exec: run a shell command and collect output
   let result = @subprocess.exec("echo 'Hello from subprocess'")
-  println("exit_code: " + result.exit_code.to_string())
-  println("stdout: " + result.stdout)
+  println("exec: " + result.stdout.trim(chars="\n").to_string())
 
-  // Example 2: exec_file - run a file directly
-  println("=== exec_file ===")
-  let result2 = @subprocess.exec_file("uname", args=["-a"])
-  println("exit_code: " + result2.exit_code.to_string())
-  println("stdout: " + result2.stdout)
+  // exec_file: run an executable directly
+  let result2 = @subprocess.exec_file("uname", args=["-s"])
+  println("exec_file: " + result2.stdout.trim(chars="\n").to_string())
 
-  // Example 3: spawn with streaming I/O
-  println("=== spawn ===")
+  // spawn: streaming I/O with pipes
   @async.with_task_group(async fn(group) {
     let child = @subprocess.spawn(
       group,
@@ -21,23 +16,28 @@ async fn main {
       pipe_stdin=true,
       pipe_stdout=true,
     )
-    // Write to child's stdin
-    let stdin = child.stdin.unwrap()
-    stdin.write("Hello from parent\n")
-    stdin.close()
-    // Read from child's stdout
+    child.stdin.unwrap().write("Hello from parent\n")
+    child.stdin.unwrap().close()
     let data = child.stdout.unwrap().read_all()
-    let output = data.text()
-    println("child output: " + output)
-    let exit_code = child.wait()
-    println("child exit_code: " + exit_code.to_string())
+    println("spawn: " + data.text().trim(chars="\n").to_string())
+    let _ = child.wait()
     group.return_immediately(())
   })
 
-  // Example 4: managed process pool
-  println("=== managed ===")
+  // managed: process pool with zombie prevention
   let pm = @managed.ProcessManager::new()
-  let r = pm.exec("echo 'managed exec'")
-  println("managed result: " + r.stdout)
-  println("active count: " + pm.active_count().to_string())
+  let r = pm.exec("echo managed")
+  println("managed: " + r.stdout.trim(chars="\n").to_string())
+
+  // ipc/socket: IPC over AF_UNIX socket
+  let sock_path = "/tmp/subprocess_example.sock"
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
+  let conn = server.accept()
+  client.send("hello from client")
+  let msg = conn.recv()
+  println("ipc: " + msg.unwrap())
+  client.close()
+  conn.close()
+  server.close()
 }

@@ -1,10 +1,10 @@
 ///|
 /// A bidirectional IPC channel for exchanging messages.
 ///
-/// Can be backed by either a Unix domain socket connection
+/// Can be backed by either an IPC socket connection
 /// or a subprocess pipe pair (stdin/stdout).
 pub(all) enum IpcChannel {
-  /// Channel backed by a Unix domain socket connection.
+  /// Channel backed by an IPC socket connection.
   /// Uses length-prefixed binary framing.
   Socket(@socket.Connection)
   /// Channel backed by a subprocess (write to stdin, read from stdout).
@@ -13,7 +13,7 @@ pub(all) enum IpcChannel {
 }
 
 ///|
-/// Create an IPC channel from a Unix socket connection.
+/// Create an IPC channel from a socket connection.
 pub fn IpcChannel::from_socket(conn : @socket.Connection) -> IpcChannel {
   Socket(conn)
 }

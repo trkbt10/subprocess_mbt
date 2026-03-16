@@ -1,5 +1,5 @@
 ///|
-/// Error type for Unix domain socket IPC operations.
+/// Error type for IPC socket operations.
 pub(all) suberror IpcError {
   /// Socket creation or bind failed.
   SocketError(String)

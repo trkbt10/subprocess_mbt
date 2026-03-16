@@ -2,6 +2,7 @@ import {
   "moonbitlang/async" @async,
   "trkbt10/subprocess" @subprocess,
   "trkbt10/subprocess/managed" @managed,
+  "trkbt10/subprocess/ipc/socket" @socket,
 }
 
 options(
