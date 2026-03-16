@@ -1,7 +1,4 @@
 import {
+  "trkbt10/subprocess/ipc/socket/ffi" @ffi,
   "moonbitlang/core/encoding/utf8" @utf8,
 }
-
-options(
-  "native-stub": [ "unix.c", "windows.c" ],
-)

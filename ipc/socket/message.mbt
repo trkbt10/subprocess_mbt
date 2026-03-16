@@ -31,7 +31,7 @@ pub fn send_framed_message(fd : Int, data : Bytes) -> Unit raise IpcError {
   for i = 0; i < len; i = i + 1 {
     buf_arr[i + 4] = data[i]
   }
-  let result = c_ipc_write(fd, Bytes::from_array(buf_arr), total)
+  let result = @ffi.write(fd, Bytes::from_array(buf_arr), total)
   if result < 0 {
     raise IoError("Failed to send message")
   }
@@ -42,7 +42,7 @@ pub fn send_framed_message(fd : Int, data : Bytes) -> Unit raise IpcError {
 /// Returns `None` on EOF (peer disconnected).
 pub fn recv_framed_message(fd : Int) -> String? raise IpcError {
   let header = FixedArray::make(4, b'\x00')
-  let hdr_result = c_ipc_read_exact(fd, header, 4)
+  let hdr_result = @ffi.read_exact(fd, header, 4)
   if hdr_result < 0 {
     return None
   }
@@ -57,7 +57,7 @@ pub fn recv_framed_message(fd : Int) -> String? raise IpcError {
     raise MessageTooLarge(msg_len)
   }
   let payload = FixedArray::make(msg_len, b'\x00')
-  let pay_result = c_ipc_read_exact(fd, payload, msg_len)
+  let pay_result = @ffi.read_exact(fd, payload, msg_len)
   if pay_result < 0 {
     raise IoError("Short read: message truncated")
   }

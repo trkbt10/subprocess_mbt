@@ -17,7 +17,7 @@ pub fn Connection::from_fd(fd : Int) -> Connection {
 /// Connect to an IPC socket server at the given path.
 pub fn Connection::connect(path : String) -> Connection raise IpcError {
   let path_bytes = string_to_utf8(path)
-  let fd = c_ipc_socket_connect(path_bytes, path_bytes.length())
+  let fd = @ffi.socket_connect(path_bytes, path_bytes.length())
   if fd < 0 {
     raise ConnectionFailed("Failed to connect to: " + path)
   }
@@ -51,7 +51,7 @@ pub fn Connection::write_bytes(
   self : Connection,
   data : Bytes,
 ) -> Unit raise IpcError {
-  let result = c_ipc_write(self.fd, data, data.length())
+  let result = @ffi.write(self.fd, data, data.length())
   if result < 0 {
     raise IoError("Failed to write bytes")
   }
@@ -67,7 +67,7 @@ pub fn Connection::read_bytes(
   max_len? : Int = 4096,
 ) -> Bytes raise IpcError {
   let buf = FixedArray::make(max_len, b'\x00')
-  let n = c_ipc_read(self.fd, buf, max_len)
+  let n = @ffi.read(self.fd, buf, max_len)
   if n < 0 {
     raise IoError("Failed to read bytes")
   }
@@ -80,7 +80,7 @@ pub fn Connection::read_bytes(
 ///|
 /// Close the connection.
 pub fn Connection::close(self : Connection) -> Unit {
-  c_ipc_socket_close(self.fd)
+  @ffi.socket_close(self.fd)
 }
 
 ///|
@@ -94,7 +94,7 @@ pub fn Connection::fd(self : Connection) -> Int {
 /// Returns `None` if the peer PID cannot be determined.
 /// Supported on macOS (LOCAL_PEERPID) and Linux (SO_PEERCRED).
 pub fn Connection::peer_pid(self : Connection) -> Int? {
-  let pid = c_ipc_get_peer_pid(self.fd)
+  let pid = @ffi.get_peer_pid(self.fd)
   if pid > 0 {
     Some(pid)
   } else {
@@ -111,7 +111,7 @@ pub fn Connection::poll(
   self : Connection,
   timeout_ms? : Int = 0,
 ) -> Bool raise IpcError {
-  let ready = c_ipc_poll_read(self.fd, timeout_ms)
+  let ready = @ffi.poll_read(self.fd, timeout_ms)
   if ready < 0 {
     raise IoError("Failed to poll connection")
   }

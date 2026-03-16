@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "trkbt10/subprocess/ipc/socket/ffi"
+
+// Values
+pub fn get_peer_pid(Int) -> Int
+
+pub fn poll_read(Int, Int) -> Int
+
+pub fn read(Int, FixedArray[Byte], Int) -> Int
+
+pub fn read_exact(Int, FixedArray[Byte], Int) -> Int
+
+pub fn set_nonblocking(Int) -> Int
+
+pub fn socket_accept(Int) -> Int
+
+pub fn socket_bind(Int, Bytes, Int) -> Int
+
+pub fn socket_close(Int) -> Unit
+
+pub fn socket_connect(Bytes, Int) -> Int
+
+pub fn socket_create() -> Int
+
+pub fn socket_listen(Int, Int) -> Int
+
+pub fn socket_unlink(Bytes, Int) -> Int
+
+pub fn write(Int, Bytes, Int) -> Int
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

@@ -1,0 +1,3 @@
+options(
+  "native-stub": [ "unix.c", "windows.c" ],
+)
