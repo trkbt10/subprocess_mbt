@@ -33,6 +33,17 @@ jobs:
           & .\install.ps1
           "$env:USERPROFILE\.moon\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
 
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Remove MinGW from PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $newPath = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'mingw' }) -join ';'
+          "PATH=$newPath" | Out-File -Append -FilePath $env:GITHUB_ENV
+
       - name: Show tool versions
         run: moon version --all
 
