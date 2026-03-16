@@ -70,7 +70,8 @@ pub async fn[X] spawn(
 
 ///|
 /// Spawn a shell command within a task group, with streaming I/O access.
-/// The command is run through `/bin/sh -c`.
+/// On Unix, the command is run through `/bin/sh -c`.
+/// On Windows, the command is run through `cmd.exe /c`.
 pub async fn[X] spawn_shell(
   group : @async.TaskGroup[X],
   command : String,
@@ -82,10 +83,11 @@ pub async fn[X] spawn_shell(
   pipe_stderr? : Bool = false,
   cancel_handler? : @process.CancellationHandler,
 ) -> ChildProcess raise SubprocessError {
+  let (shell, shell_args) = shell_command(command)
   spawn(
     group,
-    "/bin/sh",
-    args=["-c", command],
+    shell,
+    args=shell_args,
     cwd?,
     env?,
     inherit_env?,

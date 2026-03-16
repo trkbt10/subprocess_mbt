@@ -1,7 +1,10 @@
 import {
   "trkbt10/subprocess/ipc/socket/ffi" @ffi,
+  "trkbt10/subprocess/env" @env,
   "moonbitlang/core/encoding/utf8" @utf8,
 }
+
+warnings = "-29"
 
 options(
   targets: {

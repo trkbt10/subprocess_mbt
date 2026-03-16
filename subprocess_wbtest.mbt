@@ -1,4 +1,5 @@
 ///|
+#cfg(not(platform="windows"))
 async test "exec_internal collects both stdout and stderr" {
   let result = exec_internal(
     "/bin/sh",
@@ -12,6 +13,7 @@ async test "exec_internal collects both stdout and stderr" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 async test "exec_internal with custom cwd" {
   let result = exec_internal(
     "/bin/sh",
@@ -21,4 +23,17 @@ async test "exec_internal with custom cwd" {
     do_inherit=true,
   )
   assert_true(result.stdout.contains("/tmp"))
+}
+
+///|
+#cfg(platform="windows")
+async test "exec_internal collects stdout on windows" {
+  let result = exec_internal(
+    "cmd.exe",
+    ["/c", "echo out"][:],
+    cwd=None,
+    env=Map::new(),
+    do_inherit=true,
+  )
+  assert_true(result.stdout.contains("out"))
 }

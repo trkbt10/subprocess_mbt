@@ -3,11 +3,12 @@ async test "ProcessManager exec runs and returns result" {
   let pm = @managed.ProcessManager::new()
   let result = pm.exec("echo managed")
   assert_eq(result.exit_code, 0)
-  assert_eq(result.stdout.trim(chars=" \n"), "managed")
+  assert_true(result.stdout.contains("managed"))
 }
 
 ///|
-async test "ProcessManager exec_file runs and returns result" {
+#cfg(not(platform="windows"))
+async test "ProcessManager exec_file runs and returns result (unix)" {
   let pm = @managed.ProcessManager::new()
   let result = pm.exec_file("echo", args=["managed", "file"])
   assert_eq(result.exit_code, 0)
@@ -15,7 +16,8 @@ async test "ProcessManager exec_file runs and returns result" {
 }
 
 ///|
-async test "ProcessManager spawn tracks child processes" {
+#cfg(not(platform="windows"))
+async test "ProcessManager spawn tracks child processes (unix)" {
   let pm = @managed.ProcessManager::new()
   @async.with_task_group(async fn(group) {
     let child = pm.spawn(group, "sleep", args=["0"])
@@ -26,7 +28,8 @@ async test "ProcessManager spawn tracks child processes" {
 }
 
 ///|
-async test "ProcessManager active_count decreases after process exits" {
+#cfg(not(platform="windows"))
+async test "ProcessManager active_count decreases after process exits (unix)" {
   let pm = @managed.ProcessManager::new()
   @async.with_task_group(async fn(group) {
     let child = pm.spawn(group, "echo", args=["done"])
@@ -38,12 +41,12 @@ async test "ProcessManager active_count decreases after process exits" {
 }
 
 ///|
-async test "ProcessManager cancel_all cancels running processes" {
+#cfg(not(platform="windows"))
+async test "ProcessManager cancel_all cancels running processes (unix)" {
   let pm = @managed.ProcessManager::new()
   @async.with_task_group(async fn(group) {
     let child = pm.spawn(group, "echo", args=["quick"])
     let _ = child.wait()
-    // After process completes, cancel_all is a no-op
     pm.cancel_all()
     assert_eq(pm.active_count(), 0)
     group.return_immediately(())

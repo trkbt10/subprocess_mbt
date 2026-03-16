@@ -1,6 +1,14 @@
 ///|
+/// Helper to create a unique socket path under the OS temp directory.
+#cfg(not(platform="windows"))
+fn test_sock_path(name : String) -> String {
+  @env.temp_dir() + "/subprocess_ipc_test_" + name + ".sock"
+}
+
+///|
+#cfg(not(platform="windows"))
 test "Server and Connection basic send/recv" {
-  let sock_path = "/tmp/subprocess_ipc_test_basic.sock"
+  let sock_path = test_sock_path("basic")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
@@ -16,8 +24,9 @@ test "Server and Connection basic send/recv" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Connection send/recv empty message" {
-  let sock_path = "/tmp/subprocess_ipc_test_empty.sock"
+  let sock_path = test_sock_path("empty")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
@@ -30,8 +39,9 @@ test "Connection send/recv empty message" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Connection recv returns None on disconnect" {
-  let sock_path = "/tmp/subprocess_ipc_test_eof.sock"
+  let sock_path = test_sock_path("eof")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
@@ -43,8 +53,9 @@ test "Connection recv returns None on disconnect" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Connection multiple messages" {
-  let sock_path = "/tmp/subprocess_ipc_test_multi.sock"
+  let sock_path = test_sock_path("multi")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
@@ -60,8 +71,9 @@ test "Connection multiple messages" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Connection raw bytes I/O" {
-  let sock_path = "/tmp/subprocess_ipc_test_raw.sock"
+  let sock_path = test_sock_path("raw")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
@@ -78,8 +90,9 @@ test "Connection raw bytes I/O" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Server poll_accept returns None when no client" {
-  let sock_path = "/tmp/subprocess_ipc_test_poll.sock"
+  let sock_path = test_sock_path("poll")
   let server = @socket.Server::new(sock_path)
   let result = server.poll_accept(timeout_ms=0)
   assert_true(result is None)
@@ -87,8 +100,9 @@ test "Server poll_accept returns None when no client" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Connection peer_pid returns Some on local connection" {
-  let sock_path = "/tmp/subprocess_ipc_test_pid.sock"
+  let sock_path = test_sock_path("pid")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
@@ -100,8 +114,9 @@ test "Connection peer_pid returns Some on local connection" {
 }
 
 ///|
+#cfg(not(platform="windows"))
 test "Connection poll returns true when data available" {
-  let sock_path = "/tmp/subprocess_ipc_test_poll2.sock"
+  let sock_path = test_sock_path("poll2")
   let server = @socket.Server::new(sock_path)
   let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()

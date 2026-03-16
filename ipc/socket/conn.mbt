@@ -16,7 +16,7 @@ pub fn Connection::from_fd(fd : Int) -> Connection {
 ///|
 /// Connect to an IPC socket server at the given path.
 pub fn Connection::connect(path : String) -> Connection raise IpcError {
-  let path_bytes = string_to_utf8(path)
+  let path_bytes = @utf8.encode(path)
   let fd = @ffi.socket_connect(path_bytes, path_bytes.length())
   if fd < 0 {
     raise ConnectionFailed("Failed to connect to: " + path)
@@ -32,7 +32,7 @@ pub fn Connection::send(
   self : Connection,
   message : String,
 ) -> Unit raise IpcError {
-  let data = string_to_utf8(message)
+  let data = @utf8.encode(message)
   send_framed_message(self.fd, data)
 }
 

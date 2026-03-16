@@ -5,6 +5,8 @@ import {
 
 options(
   targets: {
+    "platform_unix.mbt": [ "native" ],
+    "platform_windows.mbt": [ "native" ],
     "spawn.mbt": [ "native" ],
     "subprocess.mbt": [ "native" ],
     "subprocess_test.mbt": [ "native" ],

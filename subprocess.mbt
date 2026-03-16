@@ -1,6 +1,7 @@
 ///|
 /// Execute a shell command and collect its output.
-/// The command is run through `/bin/sh -c` (Unix).
+/// On Unix, the command is run through `/bin/sh -c`.
+/// On Windows, the command is run through `cmd.exe /c`.
 ///
 /// Returns `ExecResult` with exit code, stdout, and stderr.
 /// Raises `SubprocessError::CommandFailed` if the exit code is non-zero
@@ -16,8 +17,7 @@ pub async fn exec(
   let env = env.unwrap_or(Map::new())
   let do_inherit = inherit_env.unwrap_or(true)
   let check = check.unwrap_or(true)
-  let shell : StringView = "/bin/sh"
-  let args : Array[String] = ["-c", command]
+  let (shell, args) = shell_command(command)
   let result = exec_internal(shell, args[:], cwd~, env~, do_inherit~) catch {
     e => raise SpawnFailed(e.to_string())
   }

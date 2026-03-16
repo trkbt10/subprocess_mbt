@@ -1,10 +1,4 @@
 ///|
-/// Encode a MoonBit String to UTF-8 Bytes.
-fn string_to_utf8(s : String) -> Bytes {
-  @utf8.encode(s)
-}
-
-///|
 /// Convert a FixedArray[Byte] to Bytes (first `len` elements).
 fn fixed_to_bytes(arr : FixedArray[Byte], len : Int) -> Bytes {
   let a : Array[Byte] = Array::make(len, b'\x00')

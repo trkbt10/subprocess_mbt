@@ -18,7 +18,7 @@ pub fn Server::new(path : String) -> Server raise IpcError {
   if fd < 0 {
     raise SocketError("Failed to create socket")
   }
-  let path_bytes = string_to_utf8(path)
+  let path_bytes = @utf8.encode(path)
   if @ffi.socket_bind(fd, path_bytes, path_bytes.length()) < 0 {
     @ffi.socket_close(fd)
     raise SocketError("Failed to bind to path: " + path)
@@ -65,7 +65,7 @@ pub fn Server::poll_accept(
 /// Close the server and remove the socket file.
 pub fn Server::close(self : Server) -> Unit {
   @ffi.socket_close(self.fd)
-  let path_bytes = string_to_utf8(self.path)
+  let path_bytes = @utf8.encode(self.path)
   let _ = @ffi.socket_unlink(path_bytes, path_bytes.length())
 }
 
