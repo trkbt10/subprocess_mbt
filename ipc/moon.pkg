@@ -1,4 +1,4 @@
 import {
   "trkbt10/subprocess" @subprocess,
-  "trkbt10/subprocess/ipc/unix" @unix,
+  "trkbt10/subprocess/ipc/socket" @socket,
 }

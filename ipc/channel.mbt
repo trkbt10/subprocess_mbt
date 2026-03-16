@@ -6,7 +6,7 @@
 pub(all) enum IpcChannel {
   /// Channel backed by a Unix domain socket connection.
   /// Uses length-prefixed binary framing.
-  Socket(@unix.UnixConnection)
+  Socket(@socket.Connection)
   /// Channel backed by a subprocess (write to stdin, read from stdout).
   /// Uses newline-delimited text framing.
   Pipe(@subprocess.ChildProcess)
@@ -14,7 +14,7 @@ pub(all) enum IpcChannel {
 
 ///|
 /// Create an IPC channel from a Unix socket connection.
-pub fn IpcChannel::from_socket(conn : @unix.UnixConnection) -> IpcChannel {
+pub fn IpcChannel::from_socket(conn : @socket.Connection) -> IpcChannel {
   Socket(conn)
 }
 
@@ -36,7 +36,7 @@ pub fn IpcChannel::from_child(child : @subprocess.ChildProcess) -> IpcChannel {
 pub async fn IpcChannel::send(
   self : IpcChannel,
   message : String,
-) -> Unit raise @unix.IpcError {
+) -> Unit raise @socket.IpcError {
   match self {
     Socket(conn) => conn.send(message)
     Pipe(child) =>
@@ -44,10 +44,10 @@ pub async fn IpcChannel::send(
         Some(writer) => {
           let data = message + "\n"
           writer.write(data) catch {
-            e => raise @unix.IoError("Pipe write failed: " + e.to_string())
+            e => raise @socket.IoError("Pipe write failed: " + e.to_string())
           }
         }
-        None => raise @unix.IoError("Child process has no stdin pipe")
+        None => raise @socket.IoError("Child process has no stdin pipe")
       }
   }
 }
@@ -61,7 +61,7 @@ pub async fn IpcChannel::send(
 /// Returns `None` if the peer disconnected / EOF.
 pub async fn IpcChannel::recv(
   self : IpcChannel,
-) -> String? raise @unix.IpcError {
+) -> String? raise @socket.IpcError {
   match self {
     Socket(conn) => conn.recv()
     Pipe(child) =>
@@ -73,7 +73,7 @@ pub async fn IpcChannel::recv(
             None => None
           }
         }
-        None => raise @unix.IoError("Child process has no stdout pipe")
+        None => raise @socket.IoError("Child process has no stdout pipe")
       }
   }
 }

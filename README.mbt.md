@@ -10,7 +10,7 @@ Built on top of `moonbitlang/async/process`, providing a higher-level API for sp
 - **`exec_file`** — Run an executable directly, collect stdout/stderr
 - **`spawn`** / **`spawn_shell`** — Spawn a process with streaming stdin/stdout/stderr pipes
 - **`managed/ProcessManager`** — Track all spawned processes, reap completed ones, graceful shutdown
-- **`ipc/UnixServer`** / **`ipc/UnixConnection`** — Unix domain socket IPC with length-prefixed message framing
+- **`ipc/socket`** — IPC socket server/client (AF_UNIX) with length-prefixed message framing
 - **`ipc/IpcChannel`** — Unified channel abstraction over sockets and pipes
 
 ## Quick Start
@@ -40,9 +40,9 @@ let pm = @managed.ProcessManager::new()
 let r = pm.exec("echo hello")
 pm.shutdown()  // cancels all, waits, no zombies
 
-// Unix domain socket IPC
-let server = @ipc.UnixServer::new("/tmp/my_app.sock")
-let client = @ipc.UnixConnection::connect("/tmp/my_app.sock")
+// IPC socket
+let server = @socket.Server::new("/tmp/my_app.sock")
+let client = @socket.Connection::connect("/tmp/my_app.sock")
 let conn = server.accept()
 client.send("hello")          // length-prefixed message
 let msg = conn.recv()         // => Some("hello")
@@ -75,16 +75,16 @@ server.close()
 | `pm.shutdown()` | Cancel + wait all (zombie-safe) |
 | `pm.wait_all()` | Wait for all without cancelling |
 
-### `trkbt10/subprocess/ipc`
+### `trkbt10/subprocess/ipc/socket`
 
 | Function | Description |
 |----------|-------------|
-| `UnixServer::new(path)` | Create Unix domain socket server |
+| `Server::new(path)` | Create IPC socket server |
 | `server.accept()` | Accept connection (blocking) |
 | `server.poll_accept(timeout_ms?)` | Non-blocking accept with timeout |
 | `server.set_nonblocking()` | Set server to non-blocking mode |
 | `server.close()` | Close server and remove socket file |
-| `UnixConnection::connect(path)` | Connect to a Unix socket server |
+| `Connection::connect(path)` | Connect to an IPC socket server |
 | `conn.send(message)` | Send length-prefixed UTF-8 message |
 | `conn.recv()` | Receive length-prefixed message (`None` on EOF) |
 | `conn.write_bytes(data)` | Send raw bytes |
@@ -92,7 +92,12 @@ server.close()
 | `conn.peer_pid()` | Get peer process PID (macOS/Linux) |
 | `conn.poll(timeout_ms?)` | Check for data readiness |
 | `conn.close()` | Close connection |
-| `IpcChannel::from_socket(conn)` | Channel over Unix socket |
+
+### `trkbt10/subprocess/ipc`
+
+| Function | Description |
+|----------|-------------|
+| `IpcChannel::from_socket(conn)` | Channel over IPC socket |
 | `IpcChannel::from_child(child)` | Channel over subprocess pipes |
 | `channel.send(msg)` / `channel.recv()` | Unified messaging |
 
@@ -100,5 +105,5 @@ server.close()
 
 - Native target only (`--target native`)
 - `subprocess` / `managed`: Unix/macOS (uses `/bin/sh`)
-- `ipc`: Unix/macOS/Windows 10 Build 17063+ (`AF_UNIX` via Winsock2)
+- `ipc/socket`: Unix/macOS/Windows 10 Build 17063+ (`AF_UNIX`)
   - `peer_pid()` は macOS (`LOCAL_PEERPID`) と Linux (`SO_PEERCRED`) のみ対応

@@ -1,8 +1,8 @@
 ///|
-test "UnixServer and UnixConnection basic send/recv" {
+test "Server and Connection basic send/recv" {
   let sock_path = "/tmp/subprocess_ipc_test_basic.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   client.send("hello server")
   let msg = conn.recv()
@@ -16,10 +16,10 @@ test "UnixServer and UnixConnection basic send/recv" {
 }
 
 ///|
-test "UnixConnection send/recv empty message" {
+test "Connection send/recv empty message" {
   let sock_path = "/tmp/subprocess_ipc_test_empty.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   client.send("")
   let msg = conn.recv()
@@ -30,10 +30,10 @@ test "UnixConnection send/recv empty message" {
 }
 
 ///|
-test "UnixConnection recv returns None on disconnect" {
+test "Connection recv returns None on disconnect" {
   let sock_path = "/tmp/subprocess_ipc_test_eof.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   client.close()
   let msg = conn.recv()
@@ -43,10 +43,10 @@ test "UnixConnection recv returns None on disconnect" {
 }
 
 ///|
-test "UnixConnection multiple messages" {
+test "Connection multiple messages" {
   let sock_path = "/tmp/subprocess_ipc_test_multi.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   client.send("msg1")
   client.send("msg2")
@@ -60,10 +60,10 @@ test "UnixConnection multiple messages" {
 }
 
 ///|
-test "UnixConnection raw bytes I/O" {
+test "Connection raw bytes I/O" {
   let sock_path = "/tmp/subprocess_ipc_test_raw.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   let data : Array[Byte] = [b'\x01', b'\x02', b'\x03']
   client.write_bytes(Bytes::from_array(data))
@@ -78,19 +78,19 @@ test "UnixConnection raw bytes I/O" {
 }
 
 ///|
-test "UnixServer poll_accept returns None when no client" {
+test "Server poll_accept returns None when no client" {
   let sock_path = "/tmp/subprocess_ipc_test_poll.sock"
-  let server = @unix.UnixServer::new(sock_path)
+  let server = @socket.Server::new(sock_path)
   let result = server.poll_accept(timeout_ms=0)
   assert_true(result is None)
   server.close()
 }
 
 ///|
-test "UnixConnection peer_pid returns Some on local connection" {
+test "Connection peer_pid returns Some on local connection" {
   let sock_path = "/tmp/subprocess_ipc_test_pid.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   let pid = conn.peer_pid()
   assert_true(pid is Some(_))
@@ -100,10 +100,10 @@ test "UnixConnection peer_pid returns Some on local connection" {
 }
 
 ///|
-test "UnixConnection poll returns true when data available" {
+test "Connection poll returns true when data available" {
   let sock_path = "/tmp/subprocess_ipc_test_poll2.sock"
-  let server = @unix.UnixServer::new(sock_path)
-  let client = @unix.UnixConnection::connect(sock_path)
+  let server = @socket.Server::new(sock_path)
+  let client = @socket.Connection::connect(sock_path)
   let conn = server.accept()
   assert_eq(conn.poll(timeout_ms=0), false)
   client.send("data")

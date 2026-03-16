@@ -1,0 +1,48 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "trkbt10/subprocess/ipc/socket"
+
+// Values
+pub fn recv_framed_message(Int) -> String? raise IpcError
+
+pub fn send_framed_message(Int, Bytes) -> Unit raise IpcError
+
+// Errors
+pub(all) suberror IpcError {
+  SocketError(String)
+  ConnectionFailed(String)
+  IoError(String)
+  Disconnected
+  MessageTooLarge(Int)
+}
+pub impl Show for IpcError
+
+// Types and methods
+pub struct Connection {
+  // private fields
+}
+pub fn Connection::close(Self) -> Unit
+pub fn Connection::connect(String) -> Self raise IpcError
+pub fn Connection::fd(Self) -> Int
+pub fn Connection::from_fd(Int) -> Self
+pub fn Connection::peer_pid(Self) -> Int?
+pub fn Connection::poll(Self, timeout_ms? : Int) -> Bool raise IpcError
+pub fn Connection::read_bytes(Self, max_len? : Int) -> Bytes raise IpcError
+pub fn Connection::recv(Self) -> String? raise IpcError
+pub fn Connection::send(Self, String) -> Unit raise IpcError
+pub fn Connection::write_bytes(Self, Bytes) -> Unit raise IpcError
+
+pub struct Server {
+  // private fields
+}
+pub fn Server::accept(Self) -> Connection raise IpcError
+pub fn Server::close(Self) -> Unit
+pub fn Server::fd(Self) -> Int
+pub fn Server::new(String) -> Self raise IpcError
+pub fn Server::path(Self) -> String
+pub fn Server::poll_accept(Self, timeout_ms? : Int) -> Connection? raise IpcError
+pub fn Server::set_nonblocking(Self) -> Unit raise IpcError
+
+// Type aliases
+
+// Traits
+
