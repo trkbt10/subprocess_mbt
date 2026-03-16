@@ -7,7 +7,5 @@ import {
 
 options(
   "is-main": true,
-  targets: {
-    "main.mbt": [ "native" ],
-  },
+  targets: { "main.mbt": [ "native" ] },
 )

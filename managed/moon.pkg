@@ -5,8 +5,5 @@ import {
 }
 
 options(
-  targets: {
-    "manager.mbt": [ "native" ],
-    "managed_test.mbt": [ "native" ],
-  },
+  targets: { "managed_test.mbt": [ "native" ], "manager.mbt": [ "native" ] },
 )
