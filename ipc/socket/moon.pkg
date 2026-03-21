@@ -1,6 +1,6 @@
 import {
   "trkbt10/subprocess/ipc/socket/ffi" @ffi,
-  "trkbt10/subprocess/env" @env,
+  "trkbt10/osenv/dirs" @osenv_dirs,
   "moonbitlang/core/encoding/utf8" @utf8,
 }
 

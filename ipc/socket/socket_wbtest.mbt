@@ -1,7 +1,7 @@
 ///|
 #cfg(not(platform="windows"))
 test "send_framed_message and recv_framed_message roundtrip" {
-  let sock_path = @env.temp_dir() + "/subprocess_ipc_wbtest_frame.sock"
+  let sock_path = @osenv_dirs.temp_dir() + "/subprocess_ipc_wbtest_frame.sock"
   let server_fd = @ffi.socket_create()
   assert_true(server_fd >= 0)
   let path_bytes = @utf8.encode(sock_path)

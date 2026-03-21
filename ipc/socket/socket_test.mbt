@@ -2,7 +2,7 @@
 /// Helper to create a unique socket path under the OS temp directory.
 #cfg(not(platform="windows"))
 fn test_sock_path(name : String) -> String {
-  @env.temp_dir() + "/subprocess_ipc_test_" + name + ".sock"
+  @osenv_dirs.temp_dir() + "/subprocess_ipc_test_" + name + ".sock"
 }
 
 ///|
