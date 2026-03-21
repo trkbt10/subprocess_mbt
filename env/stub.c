@@ -30,27 +30,6 @@ int subprocess_env_get_os_name(char* buffer, int buffer_len) {
     return len;
 }
 
-/*
- * Get environment variable into buffer.
- * name: null-terminated UTF-8 string.
- * Returns: bytes written (excluding null), 0 if not found, -1 on error.
- */
-int subprocess_env_getenv(const char* name, char* buffer, int buffer_len) {
-    if (!name || !buffer || buffer_len <= 0) return -1;
-#ifdef _WIN32
-    DWORD len = GetEnvironmentVariableA(name, buffer, buffer_len);
-    if (len == 0) return 0;       /* not found or error */
-    if ((int)len >= buffer_len) return -1;  /* buffer too small */
-    return (int)len;
-#else
-    const char* value = getenv(name);
-    if (!value) return 0;
-    int len = (int)strlen(value);
-    if (len >= buffer_len) return -1;
-    memcpy(buffer, value, len);
-    return len;
-#endif
-}
 
 /*
  * Get temp directory path into buffer.

@@ -2,7 +2,8 @@
   "name": "trkbt10/subprocess",
   "version": "0.2.0",
   "deps": {
-    "moonbitlang/async": "0.16.8"
+    "moonbitlang/async": "0.16.8",
+    "moonbitlang/x": "0.4.41"
   },
   "readme": "README.mbt.md",
   "repository": "https://github.com/trkbt10/subprocess_mbt",

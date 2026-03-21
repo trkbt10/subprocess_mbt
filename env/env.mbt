@@ -32,18 +32,6 @@ pub fn detect_os() -> OsKind {
   }
 }
 
-///|
-/// Get an environment variable by name.
-/// Returns `None` if the variable is not set.
-pub fn get_env(name : String) -> String? {
-  let buffer = Bytes::new(4096)
-  let name_bytes = to_utf8_cstring(name)
-  let len = c_getenv(name_bytes, buffer, 4096)
-  if len <= 0 {
-    return None
-  }
-  Some(@utf8.decode_lossy(buffer[:len]))
-}
 
 ///|
 /// Get the OS standard temporary directory.
@@ -69,20 +57,8 @@ pub fn temp_dir_for(name : String) -> String {
 }
 
 ///|
-/// Encode a MoonBit string to null-terminated UTF-8 bytes for C FFI calls.
-fn to_utf8_cstring(s : String) -> Bytes {
-  let utf8 = @utf8.encode(s)
-  let len = utf8.length()
-  Bytes::makei(len + 1, fn(i) { if i < len { utf8[i] } else { b'\x00' } })
-}
-
-///|
 #borrow(buffer)
 extern "C" fn c_get_os_name(buffer : Bytes, buffer_len : Int) -> Int = "subprocess_env_get_os_name"
-
-///|
-#borrow(name, buffer)
-extern "C" fn c_getenv(name : Bytes, buffer : Bytes, buffer_len : Int) -> Int = "subprocess_env_getenv"
 
 ///|
 #borrow(buffer)
